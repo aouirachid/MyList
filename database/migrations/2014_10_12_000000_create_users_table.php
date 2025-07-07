@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('country');
             $table->string('city');
             $table->timestamp('birthday');
-            $table->string('userName');
+            $table->string('userName')->unique();
             $table->string('email')->unique();
-            $table->integer('phone');
+            $table->integer('phone')->unique();
             $table->string('password');
             $table->integer('accountType');
             $table->integer('status');
