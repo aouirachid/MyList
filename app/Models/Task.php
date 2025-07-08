@@ -10,6 +10,7 @@ class Task extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'document_id',
         'title',
         'description',
         'startDate',
@@ -18,4 +19,19 @@ class Task extends Model
         'parentTaskId',
         'status'
     ];
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class);
+    }
+    public function tag()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+    
+   public function document()
+   {
+    return $this->belongsTo(Document::class);
+   }
 }
+
