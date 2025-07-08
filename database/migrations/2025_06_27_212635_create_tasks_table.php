@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('startDate');
             $table->timestamp('endDate');
             $table->integer('priority');
-            $table->integer('parentTaskId')->nullable();
+            $table->integer('parentTaskId')->nullable()->references();
             $table->integer('status');
             $table->timestamps();
         });
