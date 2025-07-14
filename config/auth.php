@@ -37,10 +37,16 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'jwt',
+            'driver' => 'session',
             'provider' => 'users',
         ],
     ],
+    'guards' => [
+    'api' => [
+        'driver' => 'jwt', // Au lieu de 'token' ou 'session'
+        'provider' => 'users',
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
