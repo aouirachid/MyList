@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Middleware\JwtAuthMiddleware;
-
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -42,13 +40,6 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
-
-//JWT
-$app->withMiddleware(function ($middleware) {
-    $middleware->alias([
-        'jwtAuth' => JwtAuthMiddleware::class,
-    ]);
-});
 
 /*
 |--------------------------------------------------------------------------
