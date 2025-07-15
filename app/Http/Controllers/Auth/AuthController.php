@@ -35,7 +35,7 @@ class AuthController extends Controller
         //Generate a token for the user
         $token = JWTAuth::fromUser($user);
 
-        //Return the response with the token and the user data 
+        //Return the response with the token and the user data
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
