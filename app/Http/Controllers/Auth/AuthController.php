@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -62,4 +63,24 @@ class AuthController extends Controller
             return response()->json(['error' => 'Could not refresh token'], 500);
         }
     }
+public function login (LoginRequest $request)
+{
+    $validated=$request->validated();
+    $loginType = filter_var($validated->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+    $credentials = [
+        $loginType => $validated->login,
+        'password' => $validated->password,
+    ];
+
+    if (!$token = auth()->attempt($credentials)) {
+        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
+
+    return response()->json([
+        'access_token' => $token,
+        'token_type' => 'bearer',
+        'expires_in' => JWTAuth::factory()->getTTL() * 60
+    ]);
+}
 }
