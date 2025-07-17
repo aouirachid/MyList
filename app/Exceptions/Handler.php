@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -39,6 +40,16 @@ class Handler extends ExceptionHandler
                     'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'The resource you request does not exist or has been moved', 
             ], Response::HTTP_NOT_FOUND);
+            }
+        });
+
+        // This one handles route not found errors (404 for missing routes)
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => 'The requested URL was not found on this server.', 
+                ], Response::HTTP_NOT_FOUND);
             }
         });
 
