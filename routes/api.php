@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::post('auth/register', [AuthController::class, 'register']);
+    Route::post('auth/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::post('auth/password/reset', [ResetPasswordController::class, 'reset']);
+
     Route::middleware(['jwtAuth'])->group(function () {
         //Protected routes
         Route::post('auth/refresh', [AuthController::class, 'refreshToken']);
