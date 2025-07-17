@@ -29,7 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'phone',
         'password',
         'accountType',
-        'status'
+        'status',
     ];
 
     /**
@@ -49,7 +49,9 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'birthday' => 'date', // Cast birthday to date
         'password' => 'hashed',
+        'password_changed_at' => 'datetime', // Add this cast for the new column
     ];
 
     public function task()
@@ -65,7 +67,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            // Include the timestamp of the last password change.
+            // This is used by the JwtAuthMiddleware to invalidate tokens
+            // issued before the last password reset.
+            'password_changed_at' => $this->password_changed_at ? $this->password_changed_at->timestamp : null,
+        ];
     }
 
     

@@ -22,7 +22,9 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'token' => 'required', // The password reset token received via email
+            'email' => 'required|email', // The user's email
+            'password' => 'required|confirmed|min:10', // New password must be confirmed and at least 10 characters long
         ];
     }
 }
