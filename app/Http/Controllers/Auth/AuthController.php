@@ -73,7 +73,7 @@ public function login (LoginRequest $request)
         'password' => $validated->password,
     ];
 
-    if (!$token = auth()->attempt($credentials)) {
+    if (!$token = JWTAuth::attempt($credentials)) {
         return response()->json(['error' => 'Invalid credentials'], 401);
     }
 
@@ -82,5 +82,16 @@ public function login (LoginRequest $request)
         'token_type' => 'bearer',
         'expires_in' => JWTAuth::factory()->getTTL() * 60
     ]);
+}
+
+public function Logout()
+{
+    try {
+        JWTAuth::invaliddate(JWTAuth::getToken());
+    } catch (JWTException $e) {
+        return response()->json(['error' => 'Failed to logout ,please try again'], 500);
+    }
+    return response()->json(['message'=>'Successfuly logged out'],200);
+
 }
 }
