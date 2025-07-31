@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Resources\LoginResponseResource;
 use App\Models\User;
-
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -53,50 +51,56 @@ class AuthController extends Controller
         ],201);
     }
 
-   // Conceptual example - actual implementation depends on your JWT/token library
-public function refreshToken(LoginRequest $request)
-{
-    try {
-        // 1. Get the old refresh token from the request header (or body, if you send it differently)
-        $oldRefreshToken = $request->bearerToken(); // Assuming it's sent as a bearer token
-        $newAccessToken = JWTAuth::refresh(JWTAuth::getToken()); // This refreshes the *access* token
+    // Conceptual example - actual implementation depends on your JWT/token library
+    public function refreshToken()
+    {
+        try {
+            // Get the token from the Authorization header
+            $token = JWTAuth::getToken();
 
-        $newRefreshToken = 'some_new_refresh_token_string'; // Placeholder: Replace with actual generation
+            // Get the user from the token before refreshing
+            $user = JWTAuth::setToken($token)->toUser();
 
-        // Return the response with the new access token and new refresh token
+            // Refresh the token
+            $newAccessToken = JWTAuth::refresh($token);
+
+            // Generate a new refresh token for the same user
+            $newRefreshToken = JWTAuth::claims(['refresh' => true])->fromUser($user);
+
+            // Return the response with the new access token and new refresh token
+            return response()->json([
+                'access_token' => $newAccessToken,
+                'refresh_token' => $newRefreshToken,
+                'token_type' => 'bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            ]);
+        } catch (JWTException $e) {
+            // Log the error for debugging
+            Log::error('Token refresh failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Could not refresh token'], 401); // 401 for unauthenticated/invalid token
+        }
+    }
+
+
+    public function login(LoginRequest $request)
+    {
+        $loginType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        $credentials = [
+            $loginType => $request->login,
+            'password' => $request->password,
+        ];
+
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['error' => 'Invalid credentials'], 401);
+        }
+
         return response()->json([
-            'access_token' => $newAccessToken,
-            'refresh_token' => $newRefreshToken, // Crucial for your acceptance criteria
+            'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'expires_in' => JWTAuth::factory()->getTTL() * 60
         ]);
-    } catch (JWTException $e) {
-        // Log the error for debugging
-        Log::error('Token refresh failed: ' . $e->getMessage());
-        return response()->json(['error' => 'Could not refresh token'], 401); // 401 for unauthenticated/invalid token
     }
-}
-  
-
-public function login(LoginRequest $request)
-{
-    $loginType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-
-    $credentials = [
-        $loginType => $request->login,
-        'password' => $request->password,
-    ];
-
-    if (!$token = auth()->attempt($credentials)) {
-        return response()->json(['error' => 'Invalid credentials'], 401);
-    }
-
-    return response()->json([
-        'access_token' => $token,
-        'token_type' => 'bearer',
-        'expires_in' => JWTAuth::factory()->getTTL() * 60
-    ]);
-}
 
 
     /**
@@ -104,16 +108,14 @@ public function login(LoginRequest $request)
      *
      * @return \Illuminate\Http\JsonResponse
      */
- 
-public function logout()
-{
-    try {
-        JWTAuth::invalidate(JWTAuth::getToken());
-        return response()->json(['message' => 'Successfully logged out'], 200);
-    } catch (JWTException $e) {
-        return response()->json(['error' => 'Failed to logout, please try again'], 500);
-    }
-    return response()->json(['message'=>'Successfuly logged out'],200);
 
-}
+    public function logout()
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return response()->json(['message' => 'Successfully logged out'], 200);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Failed to logout, please try again'], 500);
+        }
+    }
 }
