@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
@@ -33,3 +35,23 @@ test('users can logout', function () {
     $this->assertGuest();
     $response->assertNoContent();
 });
+
+it("user can loggout with valid JWT and acces denied after logout",function(){
+
+     $user = User::factory()->create();
+    $token = JWTAuth::fromUser($user);
+
+    // Logout
+    $response = $this->withHeader('Authorization', "Bearer $token")
+                     ->postJson('/api/v1/auth/logout');
+
+    $response->assertStatus(200)
+             ->assertJson(['message' => 'Successfully logged out']);
+
+    // Try to access a protected route with the same token
+    $this->withHeader('Authorization', "Bearer $token")
+         ->getJson('/api/v1/users')
+         ->assertStatus(401);
+});
+
+

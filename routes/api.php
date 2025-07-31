@@ -25,16 +25,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::post('auth/register', [AuthController::class, 'register']);
+    Route::post('auth/login',[AuthController::class, 'login']);
     Route::post('auth/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
     Route::post('auth/password/reset', [ResetPasswordController::class, 'reset']);
+    Route::post('auth/refresh', [AuthController::class, 'refreshToken']);
 
     Route::middleware(['jwtAuth'])->group(function () {
         //Protected routes
-        Route::post('auth/refresh', [AuthController::class, 'refreshToken']);
-        Route::resource('/user',UserController::class);
-        Route::resource('/task',TaskController::class);
-        Route::resource('/tag',TagController::class);
-        Route::resource('/document',DocumentController::class);
+       
+            Route::post('auth/logout',[AuthController::class, 'logout']);
+
+        Route::resource('/users',UserController::class);
+        Route::resource('/tasks',TaskController::class);
+        Route::resource('/tags',TagController::class);
+        Route::resource('/documents',DocumentController::class);
         Route::resource('/collaborators',CollaboratorsController::class);
     });
 });
