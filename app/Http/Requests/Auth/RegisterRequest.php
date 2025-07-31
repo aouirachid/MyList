@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class RegisterRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,20 +22,18 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-             'firstName' => 'required|string|max:255',
-        'lastName' => 'required|string|max:255',
-        'userName' => 'required|string|max:255|unique:users,userName',
-        'email' => 'required|email|max:255|unique:users,email',
-        'password' => 'required|string|min:8|confirmed',
-
-        'gender' => 'required|in:male,female,other',
-        'country' => 'required|string|max:100',
-        'city' => 'required|string|max:100',
-        'birthday' => 'required|date|before:today',
-        'phone' => 'required|string|max:20',
-
-        'accountType' => 'required|in:10,20,30', // example: 10=admin, 20=client, 30=artisant
-        'status' => 'in:0,1', // optional, if set to active/inactive
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'gender' => 'required|in:male,female,other',
+            'country' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'birthday' => 'required|date|before:today',
+            'userName' => 'required|string|max:255|unique:users,userName',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'phone' => 'required|string|max:20',
+            'password' => 'required|string|min:8',
+            'accountType' => 'required',
+            'status' => 'required',
         ];
     }
 }
