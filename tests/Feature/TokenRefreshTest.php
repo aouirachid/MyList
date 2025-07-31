@@ -2,13 +2,13 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\PersonalAccessToken; // Keep if you use Sanctum elsewhere, otherwise optional
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 uses(RefreshDatabase::class); // Use RefreshDatabase trait for clean tests
 
 it('returns new tokens and invalidates old refresh token', function () {
     // 1. Create user
-    $user = User::factory()->create();
+    $user = User::factory()->create()->fresh();
     
 
     // 2. Generate tokens (simulate login)
