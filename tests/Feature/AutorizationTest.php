@@ -11,11 +11,11 @@ it("access to an Api wiithout a JWT",function(){
     $response=$this->json('GET','/api/v1/tasks');
     $response->assertStatus(401)
     ->assertJson([
-                 'message' => 'Token not provided',
-             ]);
+            'message' => 'Token not provided',
+        ]);
 });
 
-it("access with anvalid or expired JWT token",function(){
+it("access with invalid or expired JWT token", function () {
     $response=$this->json('GET','/api/v1/tasks',[],['Authorization'=>'
     Bearer invalid_token']);
     $response->assertStatus(401);
