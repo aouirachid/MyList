@@ -17,13 +17,13 @@ class ResetPasswordController extends Controller
         $validated = $request->validated();
 
         $response = Password::broker()->reset(
-            $validated->only('email', 'password', 'password_confirmation', 'token'),
+            $validated,
             function ($user) use ($validated) {
                 // This callback is executed if the token is valid and the password can be reset.
 
                 // Update the user's password with the new hashed password
                 $user->forceFill([
-                    'password' => Hash::make($validated->password),                                                                                                                               
+                    'password' => Hash::make($validated['password']),
                 ])->setRememberToken(null); // Clear any 'remember me' token if present
 
                 // Update the 'password_changed_at' timestamp.
