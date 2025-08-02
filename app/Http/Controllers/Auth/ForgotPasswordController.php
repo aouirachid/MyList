@@ -20,6 +20,9 @@ class ForgotPasswordController extends Controller
         Password::sendResetLink(
             $validated
         );
+
+
+
         return response()->json([
             'status' => 'success',
             'message' => 'Password reset link sent successfully. Please check your email.',
