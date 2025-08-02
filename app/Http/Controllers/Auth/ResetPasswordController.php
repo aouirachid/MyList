@@ -28,7 +28,7 @@ class ResetPasswordController extends Controller
 
                 // Update the 'password_changed_at' timestamp.
                 // This is crucial for invalidating all existing JWTs for this user.
-                // Any JWT issued before this timestamp will be considered invalid by our middleware.                                                                                                                                                                                                                                                                          
+                // Any JWT issued before this timestamp will be considered invalid by our middleware
                 $user->password_changed_at = now();
 
                 $user->save(); // Save the updated user model
