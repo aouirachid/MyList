@@ -23,7 +23,7 @@ it("access with invalid or expired JWT token", function () {
 
 it("acces with valid JWT toke",function(){
 
-    $user=User::factory()->create();
+    $user = User::factory()->create()->fresh();
 
     $token=JWTAuth::fromUser($user);
 

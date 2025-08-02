@@ -34,18 +34,7 @@ it('returns new tokens and invalidates old refresh token', function () {
 
     // 8. Try using old refresh token again (simulate replay attack)
     $this->withHeader('Authorization', "Bearer $originalRefreshToken")
-         ->postJson('/api/v1/auth/refresh')
-         ->assertUnauthorized()
-         ->assertJson(['error' => 'Could not refresh token']);
+        ->postJson('/api/v1/auth/refresh')
+        ->assertUnauthorized()
+        ->assertJson(['error' => 'Could not refresh token']);
 });
-
-/* it('returns 401 Unauthorized for an invalid refresh token', function () {
-    // Generate a random, invalid token string
-    $invalidToken = 'invalid-refresh-token-string-12345';
-
-    $response = $this->withHeader('Authorization', "Bearer $invalidToken")
-                     ->postJson('/api/v1/auth/refresh');
-
-    $response->assertStatus(401)
-             ->assertJson(['message' => 'Unauthenticated.']); // Or your specific error message
-}); */
