@@ -33,7 +33,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware(['jwtAuth'])->group(function () {
         //Protected routes
         Route::post('auth/logout',[AuthController::class, 'logout']);
-
+        Route::post('users/{id}/change-password', [UserController::class, 'changePassword']);
         Route::resource('/users',UserController::class);
         Route::resource('/tasks',TaskController::class);
         Route::resource('/tags',TagController::class);
