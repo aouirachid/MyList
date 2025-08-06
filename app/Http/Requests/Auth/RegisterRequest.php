@@ -31,7 +31,7 @@ class RegisterRequest extends FormRequest
             'userName' => 'required|string|max:255|unique:users,userName',
             'email' => 'required|string|email|max:255|unique:users,email',
             'phone' => 'required|string|max:20',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:10',
             'accountType' => 'required',
             'status' => 'required',
         ];
