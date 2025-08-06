@@ -37,7 +37,7 @@ class UserFactory extends Factory
             'country' => 'USA',
             'city' => 'New York',
             'birthday' => '1990-01-01',
-            'phone' => '1234567890',
+            'phone' => '0' . $this->faker->unique()->randomNumber(9, true), 
             'accountType' => '20',
             'status' => '1',
         ];
