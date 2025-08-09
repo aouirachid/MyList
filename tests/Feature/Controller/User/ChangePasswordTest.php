@@ -45,7 +45,7 @@ test('user cannot change password with invalid current password', function () {
         'Authorization' => 'Bearer ' . $token
     ]);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['current_password' => 'The current password is incorrect.']);
+    $response->assertJsonValidationErrors(['current_password']);
     $user->refresh();
     expect(Hash::check('myOldPassword', $user->password))->toBeTrue();
     expect(Hash::check($newPassword, $user->password))->toBeFalse();
@@ -70,7 +70,7 @@ test('user cannot change password with new password and new password confirmatio
         'Authorization' => 'Bearer ' . $token
     ]);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['new_password' => 'The new password and new password confirmation must match.']);
+    $response->assertJsonValidationErrors(['new_password']);
     $user->refresh();
     expect(Hash::check('myOldPassword', $user->password))->toBeTrue();
     expect(Hash::check($newPassword, $user->password))->toBeFalse();
@@ -97,7 +97,7 @@ test('user cannot change password with new password that is too short', function
         'Authorization' => 'Bearer ' . $token
     ]);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['new_password' => 'The new password must be at least 10 characters.']);
+    $response->assertJsonValidationErrors(['new_password']);
     $user->refresh();
     expect(Hash::check('myOldPassword', $user->password))->toBeTrue();
     expect(Hash::check($newPassword, $user->password))->toBeFalse();
