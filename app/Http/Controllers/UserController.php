@@ -67,7 +67,7 @@ class UserController extends Controller
         // Get the authenticated user.
         $user = Auth::user();
         $user->password = Hash::make($request->new_password);
-        Auth::User()->password_changed_at=now();
+        $user->password_changed_at=now();
         $user->save();
         return response()->json([
             'message' => 'Password changed successfully',
