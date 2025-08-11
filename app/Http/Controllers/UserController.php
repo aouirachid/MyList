@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth; // <-- Add this for Auth
@@ -60,6 +61,19 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    public function changePassword(ChangePasswordRequest $request) 
+    {
+    /** @var \App\Models\User $user */
+        // Get the authenticated user.
+        $user = Auth::user();
+        $user->password = Hash::make($request->new_password);
+        Auth::User()->password_changed_at=now();
+        $user->save();
+        return response()->json([
+            'message' => 'Password changed successfully',
+        ], 200);
+    }
+
     public function update(UpdateProfileRequest $request, string $id)
     {
         $user = User::findOrFail($id);
