@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 
 class ForgotPasswordController extends Controller
 {
-    public function sendResetLinkEmail(ForgotPasswordRequest $request)
+    public function forgetPassword(ForgotPasswordRequest $request)
     {
         // Validate the email address provided in the request
         $validated = $request->validated();
@@ -18,7 +18,7 @@ class ForgotPasswordController extends Controller
         // This will generate a token, store it in the 'password_reset_tokens' table,
         // and send an email to the user with the reset link.
         Password::sendResetLink(
-            $validated
+            $validated->only('email')
         );
 
 
