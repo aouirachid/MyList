@@ -30,8 +30,8 @@ class TaskController extends Controller
             $documentResponse = app(DocumentController::class)->store($request);
             $documentData = json_decode($documentResponse->getContent(), true);
             $documentId = $documentData['data']['id'];
-        } elseif (isset($validated['documentId'])) {
-            $documentId = $validated['documentId'];
+        } elseif (isset($validated['document_id'])) {
+            $documentId = $validated['document_id'];
         }
 
         $task = Task::create([
