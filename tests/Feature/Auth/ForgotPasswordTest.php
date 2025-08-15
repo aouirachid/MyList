@@ -1,7 +1,8 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
+//use Illuminate\Auth\Notifications\ResetPassword; replace this with 
+use App\Notifications\CustomResetPassword;//this one 
 use Illuminate\Support\Facades\Notification;
 use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -12,6 +13,7 @@ beforeEach(function () {
 });
 
 test("A valid user can request a password reset link", function () {
+    
     $user = User::factory()->create()->fresh();
 
     $this->postJson('/api/v1/auth/password/email', ['email' => $user->email])
@@ -21,13 +23,14 @@ test("A valid user can request a password reset link", function () {
             'message' => 'Password reset link sent successfully. Please check your email.'
         ]);
 
-    Notification::assertSentTo($user, ResetPassword::class);
+    Notification::assertSentTo($user, CustomResetPassword::class);//i replaced the resetPassword with CustomResetPassword
     $this->assertDatabaseHas('password_reset_tokens', [
         'email' => $user->email
     ]);
 });
 
 test('Email not found', function () {
+
     $email = Faker::create()->safeEmail();
 
     $this->postJson('/api/v1/auth/password/email', ['email' => $email])

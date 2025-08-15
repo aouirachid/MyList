@@ -20,6 +20,9 @@ beforeEach(function () {
 it('returns a 200 JSON response when sendResetLink succeeds', function () {
     $email = Faker::create()->safeEmail();
 
+    // 2) Create a user in the database with this email
+    User::factory()->create(['email' => $email]);
+
     // 1) Fake a FormRequest whose validated() returns our email
     $request = Mockery::mock(ForgotPasswordRequest::class);
     $request->shouldReceive('validated')->once()->andReturn(['email' => $email]);
