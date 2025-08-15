@@ -16,6 +16,7 @@ class Task extends Model
         'startDate',
         'endDate',
         'priority',
+        'tag_id',
         'parentTaskId',
         'status'
     ];
