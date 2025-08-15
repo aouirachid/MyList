@@ -14,12 +14,8 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        //Registration logic
-
         // Retrieve the validated input data
         $validated = $request->validated();
-
-
         $user = User::Create([
             'firstName' => $validated['firstName'],
             'lastName' => $validated['lastName'],
