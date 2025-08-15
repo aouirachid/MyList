@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
 use Illuminate\Http\Request;
 
 class DocumentController extends Controller
@@ -19,7 +20,20 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'document' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
+        ]);
+
+        $filePath = $request->file('document')->store('documents', 'public');
+
+        $document = Document::create([
+            'document_path' => $filePath,
+        ]);
+
+        return response()->json([
+            'message' => 'Document uploaded successfully',
+            'data' => $document,
+        ], 201);
     }
 
     /**

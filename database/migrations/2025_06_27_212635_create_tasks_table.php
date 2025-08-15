@@ -20,17 +20,10 @@ return new class extends Migration
             $table->timestamp('startDate');
             $table->timestamp('endDate');
             $table->integer('priority');
+            $table->foreignId('tag_id')->constrained();
             $table->integer('parentTaskId')->nullable();
             $table->integer('status');
             $table->timestamps();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('tasks');
     }
 };

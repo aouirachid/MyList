@@ -11,7 +11,7 @@ class CreateTaskRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,16 @@ class CreateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => 'required|exists:users,id',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'startDate' => 'required|date',
+            'endDate' => 'required|date',
+            'priority' => 'required|integer',
+            'parentTaskId' => 'nullable|exists:tasks,id',
+            'document_id' => 'nullable|exists:documents,id',
+            'tag_id' => 'nullable|exists:tags,id',
+            'status' => 'required|integer',
         ];
     }
 }
