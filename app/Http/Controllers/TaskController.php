@@ -42,10 +42,17 @@ class TaskController extends Controller
             'startDate' => $validated['startDate'],
             'endDate' => $validated['endDate'],
             'priority' => $validated['priority'],
-            'tag_id' => $validated['tag_id'],
-            'parentTaskId' => $validated['parentTaskId'],
+            'parentTaskId' => $validated['parentTaskId'] ?? null,
             'status' => $validated['status'],
         ]);
+
+        // Attach tags to the task
+        if (isset($validated['tags']) && is_array($validated['tags'])) {
+            $task->tags()->attach($validated['tags']);
+        }
+
+        // Load the tags relationship for the response
+        $task->load('tags');
 
         return response()->json([
             'message' => 'Task created successfully',

@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Storage;
 
 test('An authenticated user successfully create a top-level task',function(){
     $user = User::factory()->create();
-    $tag = Tag::factory()->create();
+    $tag1 = Tag::factory()->create();
+    $tag2 = Tag::factory()->create();
     $token = JWTAuth::fromUser($user);
     $task = [
         'user_id' => $user->id,
@@ -25,7 +26,7 @@ test('An authenticated user successfully create a top-level task',function(){
         'endDate' => Carbon::now()->addDay()->format('Y-m-d H:i:s'),
         'priority' => 1,
         'parentTaskId' => null,
-        'tag_id' => $tag->id,
+        'tags' => [$tag1->id, $tag2->id],
         'status' => 1,
     ];
 
@@ -44,10 +45,19 @@ test('An authenticated user successfully create a top-level task',function(){
             ->where('data.description', $task['description'])
             ->where('data.user_id', $user->id)
             ->where('data.parentTaskId', null)
-            ->where('data.tag_id', $tag->id)
+            ->has('data.tags', 2)
+            ->where('data.tags.0.id', $tag1->id)
+            ->where('data.tags.1.id', $tag2->id)
             ->etc()
     );
-    $this->assertDatabaseHas('tasks', $task);
+
+    // Verify task was created without tag_id field
+    $taskWithoutTags = array_diff_key($task, array_flip(['tags']));
+    $this->assertDatabaseHas('tasks', $taskWithoutTags);
+
+    // Verify tags are attached in pivot table
+    $this->assertDatabaseHas('task__tags', ['task_id' => $response->json('data.id'), 'tag_id' => $tag1->id]);
+    $this->assertDatabaseHas('task__tags', ['task_id' => $response->json('data.id'), 'tag_id' => $tag2->id]);
 });
 
 test('An authenticated user successfully create a sub task', function () {
@@ -63,7 +73,7 @@ test('An authenticated user successfully create a sub task', function () {
         'endDate' => Carbon::now()->addDay()->format('Y-m-d H:i:s'),
         'priority' => 1,
         'parentTaskId' => null,
-        'tag_id' => $tag->id,
+        'tags' => [$tag->id],
         'status' => 1,
     ];
 
@@ -86,7 +96,7 @@ test('An authenticated user successfully create a sub task', function () {
         'endDate' => Carbon::now()->addDay()->format('Y-m-d H:i:s'),
         'priority' => 1,
         'parentTaskId' => $firstTaskId,
-        'tag_id' => $tag->id,
+        'tags' => [$tag->id],
         'status' => 1,
     ];
 
@@ -106,10 +116,14 @@ test('An authenticated user successfully create a sub task', function () {
             ->where('data.description', $secondTask['description'])
             ->where('data.user_id', $user->id)
             ->where('data.parentTaskId', $firstTaskId)
-            ->where('data.tag_id', $tag->id)
+            ->has('data.tags', 1)
+            ->where('data.tags.0.id', $tag->id)
             ->etc()
     );
-    $this->assertDatabaseHas('tasks', $secondTask);
+
+    $taskWithoutTags = array_diff_key($secondTask, array_flip(['tags']));
+    $this->assertDatabaseHas('tasks', $taskWithoutTags);
+    $this->assertDatabaseHas('task__tags', ['task_id' => $childResponse->json('data.id'), 'tag_id' => $tag->id]);
 });
 
 test('An authenticated user successfully create a task with document upload', function () {
@@ -127,7 +141,7 @@ test('An authenticated user successfully create a task with document upload', fu
         'endDate' => Carbon::now()->addDay()->format('Y-m-d H:i:s'),
         'priority' => 1,
         'parentTaskId' => null,
-        'tag_id' => $tag->id,
+        'tags' => [$tag->id],
         'status' => 1,
     ];
 
@@ -145,11 +159,14 @@ test('An authenticated user successfully create a task with document upload', fu
         $json->where('message', 'Task created successfully')
             ->where('data.title', $task['title'])
             ->where('data.document_id', $document->id)
-            ->where('data.tag_id', $tag->id)
+            ->has('data.tags', 1)
+            ->where('data.tags.0.id', $tag->id)
             ->etc()
     );
 
-    $this->assertDatabaseHas('tasks', $task);
+    $taskWithoutTags = array_diff_key($task, array_flip(['tags']));
+    $this->assertDatabaseHas('tasks', $taskWithoutTags);
+    $this->assertDatabaseHas('task__tags', ['task_id' => $response->json('data.id'), 'tag_id' => $tag->id]);
 });
 
 it('handle validation errors when creating a task', function () {
@@ -165,7 +182,7 @@ it('handle validation errors when creating a task', function () {
         'startDate' => Carbon::now()->format('Y-m-d H:i:s'),
         'priority' => 1,
         'parentTaskId' => null,
-        'tag_id' => $tag->id,
+        'tags' => [$tag->id],
         'status' => 1,
     ];
 
@@ -174,7 +191,8 @@ it('handle validation errors when creating a task', function () {
     ]);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['endDate']);
-    $this->assertDatabaseMissing('tasks', $task);
+    $taskWithoutTags = array_diff_key($task, array_flip(['tags']));
+    $this->assertDatabaseMissing('tasks', $taskWithoutTags);
 });
 
 it("can't create a task with a parent task that doesn't exist", function () {
@@ -191,7 +209,7 @@ it("can't create a task with a parent task that doesn't exist", function () {
         'endDate' => Carbon::now()->addDay()->format('Y-m-d H:i:s'),
         'priority' => 1,
         'parentTaskId' => 999,
-        'tag_id' => $tag->id,
+        'tags' => [$tag->id],
         'status' => 1,
     ];
 
@@ -216,7 +234,7 @@ it("can't create a task with a tag that doesn't exist", function () {
         'endDate' => Carbon::now()->addDay()->format('Y-m-d H:i:s'),
         'priority' => 1,
         'parentTaskId' => null,
-        'tag_id' => 999,
+        'tags' => [999],
         'status' => 1,
     ];
 
@@ -224,7 +242,7 @@ it("can't create a task with a tag that doesn't exist", function () {
         'Authorization' => 'Bearer ' . $token
     ]);
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['tag_id']);
+    $response->assertJsonValidationErrors(['tags.0']);
     $this->assertDatabaseCount('tasks', 0);
 });
 
@@ -242,7 +260,7 @@ it("can't create a task with a document that doesn't exist", function () {
         'endDate' => Carbon::now()->addDay()->format('Y-m-d H:i:s'),
         'priority' => 1,
         'parentTaskId' => null,
-        'tag_id' => $tag->id,
+        'tags' => [$tag->id],
         'status' => 1,
     ];
 

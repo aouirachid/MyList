@@ -16,7 +16,6 @@ class Task extends Model
         'startDate',
         'endDate',
         'priority',
-        'tag_id',
         'parentTaskId',
         'status'
     ];
@@ -25,9 +24,9 @@ class Task extends Model
     {
         return $this->belongsToMany(User::class);
     }
-    public function tag()
+    public function tags()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class, 'task__tags');
     }
     
    public function document()
