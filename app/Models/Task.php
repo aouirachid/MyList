@@ -29,6 +29,7 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'collaborators', 'task_id', 'user_id')->withTimestamps();
@@ -49,7 +50,7 @@ class Task extends Model
         $userId = JWTAuth::parseToken()->authenticate();
         //Get the tasks for the current user and the tasks for the current user's collaborators
         return self::with(['users', 'tags', 'document'])
-        //Get the tasks for the current user
+            //Get the tasks for the current user
             ->where('user_id', $userId)
             //Get the tasks for the current user's collaborators
             ->orWhereHas('users', function ($q) use ($userId) {
@@ -57,5 +58,4 @@ class Task extends Model
             })
             ->get();
     }
-
 }
