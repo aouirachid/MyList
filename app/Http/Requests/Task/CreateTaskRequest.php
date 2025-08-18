@@ -30,7 +30,8 @@ class CreateTaskRequest extends FormRequest
             'priority' => 'required|integer',
             'parentTaskId' => 'nullable|exists:tasks,id',
             'document_id' => 'nullable|exists:documents,id',
-            'tag_id' => 'nullable|exists:tags,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
             'status' => 'required|integer',
         ];
     }
