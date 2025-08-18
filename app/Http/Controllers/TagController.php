@@ -11,9 +11,14 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $tags = Tag::all();
+
+        return response()->json([
+            'message' => 'Tags retrieved successfully',
+            'data' => $tags,
+        ], 200);
     }
 
     /**
