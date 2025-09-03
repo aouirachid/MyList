@@ -13,10 +13,20 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
+    public function index(Request $request)
+{
+    $user = $request->attributes->get('jwt_user');
+    $tasks = Task::getAllTasks();
+    return response()->json([
+        'message' => 'Tasks fetched successfully',
+        'data' => $tasks,
+    ], 200);
+    if(!$user){
+        return response()->json([
+            'message' => 'Token not provided',
+        ], 401);
     }
+}
 
     /**
      * Store a newly created resource in storage.
