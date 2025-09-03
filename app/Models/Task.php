@@ -43,12 +43,16 @@ class Task extends Model
     {
         return $this->belongsTo(Document::class);
     }
-
     public static function getAllTasks()
     {
-        //Get the current user id
-        $userId = JWTAuth::parseToken()->authenticate();
-        //Get the tasks for the current user and the tasks for the current user's collaborators
+        //Get the current user id using JWT if available, fallback to Auth
+        $user = null;
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (\Throwable $e) {
+            // ignore and fallback
+        }
+        $userId = $user ? (is_object($user) && property_exists($user, 'id') ? $user->id : (method_exists($user, 'getAuthIdentifier') ? $user->getAuthIdentifier() : null)) : Auth::id();
         return self::with(['users', 'tags', 'document'])
             //Get the tasks for the current user
             ->where('user_id', $userId)
