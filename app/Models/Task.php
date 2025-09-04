@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 
 class Task extends Model
@@ -44,7 +45,7 @@ class Task extends Model
     public static function getAllTasks()
     {
         //Get the current user id
-        $userId = Auth::id();
+        $userId = JWTAuth::parseToken()->authenticate();
         //Get the tasks for the current user and the tasks for the current user's collaborators
         return self::with(['users', 'tags', 'document'])
         //Get the tasks for the current user

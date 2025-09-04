@@ -15,19 +15,22 @@ class TaskController extends Controller
      */
     public function index(Request $request)
 {
+    // Get the authenticated user from the request
     $user = $request->attributes->get('jwt_user');
-    $tasks = Task::getAllTasks();
-    return response()->json([
-        'message' => 'Tasks fetched successfully',
-        'data' => $tasks,
-    ], 200);
-    if(!$user){
+    // Check if the user is not authenticated
+    if (!$user) {
         return response()->json([
             'message' => 'Token not provided',
         ], 401);
     }
+    // Fetch tasks (owned and collaborated) for the authenticated user
+    $tasks = Task::getAllTasks();
+    // Return the tasks
+    return response()->json([
+        'message' => 'Tasks fetched successfully',
+        'data' => $tasks,
+    ], 200);
 }
-
     /**
      * Store a newly created resource in storage.
      */
