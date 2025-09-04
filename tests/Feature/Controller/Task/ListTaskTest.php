@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+uses(RefreshDatabase::class);
 
 it('as an authenticated user, I can list owned and collaborated tasks', function () {
     //create a user
