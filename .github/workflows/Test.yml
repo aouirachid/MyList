@@ -1,11 +1,10 @@
 name: Test CI
 
 on:
-  workflow_dispatch:
   pull_request:
     branches:
       - main
-      - beta
+      - Beta
 
 jobs:
   laravel-tests:
@@ -39,6 +38,9 @@ jobs:
 
       - name: Generate key
         run: php artisan key:generate
+
+      - name: Generate JWT secret
+        run: php artisan jwt:secret
 
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
