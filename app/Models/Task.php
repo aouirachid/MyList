@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 
 class Task extends Model
@@ -40,42 +41,19 @@ class Task extends Model
     {
         return $this->belongsTo(Document::class);
     }
-
-
-    public function scopeForUser(Builder $query, int $userId): Builder
+    public static function getAllTasks()
     {
-        return $query->where('user_id', $userId)
-            ->orWhereHas('users', fn($q) => $q->where('users.id', $userId));
+        //Get the current user id
+        $userId = Auth::id();
+        //Get the tasks for the current user and the tasks for the current user's collaborators
+        return self::with(['users', 'tags', 'document'])
+        //Get the tasks for the current user
+            ->where('user_id', $userId)
+            //Get the tasks for the current user's collaborators
+            ->orWhereHas('users', function ($q) use ($userId) {
+                $q->where('users.id', $userId);
+            })
+            ->get();
     }
 
-    public function scopeByStatus(Builder $query, int $status): Builder
-    {
-        return $query->where('status', $status);
-    }
-
-    public function scopeByPriority(Builder $query, int $priority): Builder
-    {
-        return $query->where('priority', $priority);
-    }
-
-    public function scopeByStartDate(Builder $query, string $date): Builder
-    {
-        return $query->whereDate('startDate', $date);
-    }
-
-    public function scopeByStartDateRange(Builder $query, string $from, string $to): Builder
-    {
-        return $query->whereBetween('startDate', [$from, $to]);
-    }
-
-    public function scopeOrderByField(Builder $query, string $field, string $direction = 'asc'): Builder
-    {
-        $allowedFields = ['startDate', 'endDate', 'priority', 'created_at', 'title'];
-        $allowedDir = ['asc', 'desc'];
-
-        if (!in_array($field, $allowedFields, true)) return $query;
-        if (!in_array($direction, $allowedDir, true)) return $query;
-
-        return $query->orderBy($field, $direction);
-    }
 }
