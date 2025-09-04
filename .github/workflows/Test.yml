@@ -5,7 +5,7 @@ on:
   pull_request:
     branches:
       - main
-      - beta
+      - Beta
 
 jobs:
   laravel-tests:
