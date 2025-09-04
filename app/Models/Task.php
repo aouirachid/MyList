@@ -42,6 +42,7 @@ class Task extends Model
     {
         return $this->belongsTo(Document::class);
     }
+
     public static function getAllTasks()
     {
         //Get the current user id
