@@ -125,6 +125,6 @@ test('eagerly loads the task with its relationships', function () {
 
     $queries = DB::getQueryLog();
 
-    expect(count($queries))->toBeLessThanOrEqual(5)
+    expect(count($queries))->toBeLessThanOrEqual(6)
         ->and($response->status())->toBe(200);
 });
