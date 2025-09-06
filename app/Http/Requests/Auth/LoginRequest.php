@@ -2,12 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
@@ -27,11 +23,11 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
 
-    return [
-        
-        'password' => ['required', 'string'],
-        'login'=>['required','string'],
-    ];
+        return [
+
+            'password' => ['required', 'string'],
+            'login' => ['required', 'string'],
+        ];
     }
 
     /**
@@ -39,14 +35,13 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    
 
     /**
      * Ensure the login request is not rate limited.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-  
+
     /**
      * Get the rate limiting throttle key for the request.
      */

@@ -14,19 +14,18 @@ test('user can change password', function () {
     $newPassword = 'myNewPassword';
     $newPasswordConfirmation = 'myNewPassword';
 
-    $response = $this->postJson('/api/v1/users/' . $user->id . '/change-password', [
+    $response = $this->postJson('/api/v1/users/'.$user->id.'/change-password', [
         'current_password' => $currentPassword,
         'new_password' => $newPassword,
-        'new_password_confirmation' => $newPasswordConfirmation
+        'new_password_confirmation' => $newPasswordConfirmation,
     ], [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(200);
     $response->assertJson(['message' => 'Password changed successfully']);
     $this->assertTrue(Hash::check($newPassword, $user->fresh()->password));
     $this->assertTrue(Auth::attempt(['email' => $user->email, 'password' => $newPassword]));
 });
-
 
 test('user cannot change password with invalid current password', function () {
     $user = User::factory()->create(['password' => Hash::make('myOldPassword')]);
@@ -37,12 +36,12 @@ test('user cannot change password with invalid current password', function () {
     $newPassword = 'myNewPassword';
     $newPasswordConfirmation = 'myNewPassword';
 
-    $response = $this->postJson('/api/v1/users/' . $user->id . '/change-password', [
+    $response = $this->postJson('/api/v1/users/'.$user->id.'/change-password', [
         'current_password' => $currentPassword,
         'new_password' => $newPassword,
-        'new_password_confirmation' => $newPasswordConfirmation
+        'new_password_confirmation' => $newPasswordConfirmation,
     ], [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['current_password']);
@@ -62,12 +61,12 @@ test('user cannot change password with new password and new password confirmatio
     $newPassword = 'myNewPassword';
     $newPasswordConfirmation = 'myNewPassword123';
 
-    $response = $this->postJson('/api/v1/users/' . $user->id . '/change-password', [
+    $response = $this->postJson('/api/v1/users/'.$user->id.'/change-password', [
         'current_password' => $currentPassword,
         'new_password' => $newPassword,
-        'new_password_confirmation' => $newPasswordConfirmation
+        'new_password_confirmation' => $newPasswordConfirmation,
     ], [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['new_password']);
@@ -89,12 +88,12 @@ test('user cannot change password with new password that is too short', function
     $newPassword = '123456';
     $newPasswordConfirmation = '123456';
 
-    $response = $this->postJson('/api/v1/users/' . $user->id . '/change-password', [
+    $response = $this->postJson('/api/v1/users/'.$user->id.'/change-password', [
         'current_password' => $currentPassword,
         'new_password' => $newPassword,
-        'new_password_confirmation' => $newPasswordConfirmation
+        'new_password_confirmation' => $newPasswordConfirmation,
     ], [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['new_password']);

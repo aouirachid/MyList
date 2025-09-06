@@ -3,14 +3,13 @@
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Models\User;
+use Faker\Factory as Faker;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Faker\Factory as Faker;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 
 beforeEach(function () {
     // Make sure no real façade calls happen
@@ -36,7 +35,7 @@ it('returns a 200 JSON response when sendResetLink succeeds', function () {
         ->andReturn(Password::RESET_LINK_SENT);
 
     // 3) Call
-    $controller = new ForgotPasswordController();
+    $controller = new ForgotPasswordController;
     $response = $controller->sendResetLinkEmail($request);
 
     // 4) Assert it’s exactly the JSON you expect
@@ -44,13 +43,12 @@ it('returns a 200 JSON response when sendResetLink succeeds', function () {
         ->toBeInstanceOf(JsonResponse::class)
         ->and($response->getStatusCode())->toBe(200)
         ->and($response->getData(true))->toMatchArray([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Password reset link sent successfully. Please check your email.',
         ]);
 });
 
-
-it("Successfully stores the token in the database", function () {
+it('Successfully stores the token in the database', function () {
     // 1) Arrange a real user and fake notifications
     $user = User::factory()->create();
     Notification::fake();
@@ -73,8 +71,8 @@ it("Successfully stores the token in the database", function () {
             // simulate the broker writing a DB record
             $token = Str::random(64);
             DB::table('password_reset_tokens')->insert([
-                'email'      => $email,
-                'token'      => hash('sha256', $token),
+                'email' => $email,
+                'token' => hash('sha256', $token),
                 'created_at' => now(),
             ]);
 
@@ -85,14 +83,14 @@ it("Successfully stores the token in the database", function () {
         });
 
     // 4) Act: call your controller
-    $response = (new ForgotPasswordController())->sendResetLinkEmail($request);
+    $response = (new ForgotPasswordController)->sendResetLinkEmail($request);
 
     // 5) Assert: correct JsonResponse
     expect($response)
         ->toBeInstanceOf(JsonResponse::class)
         ->and($response->getStatusCode())->toBe(200)
         ->and($response->getData(true))->toMatchArray([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Password reset link sent successfully. Please check your email.',
         ]);
 

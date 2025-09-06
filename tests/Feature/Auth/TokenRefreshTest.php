@@ -9,7 +9,6 @@ uses(RefreshDatabase::class); // Use RefreshDatabase trait for clean tests
 it('returns new tokens and invalidates old refresh token', function () {
     // 1. Create user
     $user = User::factory()->create()->fresh();
-    
 
     // 2. Generate tokens (simulate login)
     $originalAccessToken = JWTAuth::fromUser($user);

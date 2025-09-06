@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('task__tags', function (Blueprint $table) {
-            $table->primary(['task_id', 'tag_id']);//clé primaire composée
+            $table->primary(['task_id', 'tag_id']); // clé primaire composée
 
             $table->foreignId('task_id')->constrained();
             $table->foreignId('tag_id')->constrained();
-            
+
             $table->timestamps();
         });
     }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Task\CreateTaskRequest;
-use App\Models\Document;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,19 +17,21 @@ class TaskController extends Controller
         // Get the authenticated user from the request
         $user = $request->attributes->get('jwt_user');
         // Check if the user is not authenticated
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'Token not provided',
             ], 401);
         }
         // Fetch tasks (owned and collaborated) for the authenticated user
         $tasks = Task::getAllTasks();
+
         // Return the tasks
         return response()->json([
             'message' => 'Tasks fetched successfully',
             'data' => $tasks,
         ], 200);
     }
+
     /**
      * Store a newly created resource in storage.
      */

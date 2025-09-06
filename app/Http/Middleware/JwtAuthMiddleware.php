@@ -2,15 +2,15 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Exception;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use App\Models\User; // Import the User model
+use Tymon\JWTAuth\Facades\JWTAuth; // Import the User model
 
 class JwtAuthMiddleware
 {
@@ -29,7 +29,7 @@ class JwtAuthMiddleware
             $token = $matches[1];
         }
 
-        if (!$token) {
+        if (! $token) {
             return response()->json(['status' => 'error', 'message' => 'Token not provided'], 401);
         }
 
@@ -38,7 +38,7 @@ class JwtAuthMiddleware
             $user = JWTAuth::parseToken()->authenticate();
 
             // If user is null, token is invalid or user not found
-            if (!$user) {
+            if (! $user) {
                 return response()->json(['status' => 'error', 'message' => 'User not found or token invalid'], 404);
             }
 
@@ -50,8 +50,8 @@ class JwtAuthMiddleware
             // Ensure the user object retrieved from the database has the latest password_changed_at
             $latestUser = User::find($user->id);
 
-            if (!$latestUser) {
-                 return response()->json(['status' => 'error', 'message' => 'User not found in database'], 404);
+            if (! $latestUser) {
+                return response()->json(['status' => 'error', 'message' => 'User not found in database'], 404);
             }
 
             // Compare the timestamp from the token with the latest from the database
@@ -69,13 +69,13 @@ class JwtAuthMiddleware
             return response()->json(['status' => 'error', 'message' => 'Token is invalid'], 401);
         } catch (JWTException $e) {
             // Catch any other JWT related exceptions
-            return response()->json(['status' => 'error', 'message' => 'Token error: ' . $e->getMessage()], 401);
+            return response()->json(['status' => 'error', 'message' => 'Token error: '.$e->getMessage()], 401);
         } catch (Exception $e) {
             // Catch any other general exceptions
-            return response()->json(['status' => 'error', 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'message' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
 
         return $next($request);
-    
+
     }
 }

@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-             // Drop the column if rolling back the migration
+            // Drop the column if rolling back the migration
             $table->dropColumn('password_changed_at');
         });
     }

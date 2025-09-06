@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('collaborators', function (Blueprint $table) {
-             $table->primary(['task_id', 'user_id']);//clé primaire composée
+            $table->primary(['task_id', 'user_id']); // clé primaire composée
 
             $table->foreignId('task_id')->constrained();
             $table->foreignId('user_id')->constrained();
