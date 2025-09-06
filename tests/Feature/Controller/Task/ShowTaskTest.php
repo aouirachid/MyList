@@ -30,12 +30,12 @@ test('a user successfully retrieving their own task', function () {
     $task->users()->attach($this->collaborator1->id);
     $task->users()->attach($this->collaborator2->id);
     $token = JWTAuth::fromUser($this->user);
-    $response = $this->getJson('/api/v1/tasks/' . $task->id, [
-        'Authorization' => 'Bearer ' . $token,
+    $response = $this->getJson('/api/v1/tasks/'.$task->id, [
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(200);
     $response->assertJson(
-        fn(AssertableJson $json) => $json->where('data.id', $task->id)
+        fn (AssertableJson $json) => $json->where('data.id', $task->id)
             ->where('data.title', $task->title)
             ->where('data.description', $task->description)
             ->where('data.document_id', $this->document->id)
@@ -62,12 +62,12 @@ test('a collaborator successfully retrieving task', function () {
     $task->users()->attach($this->collaborator1->id);
     $task->users()->attach($this->collaborator2->id);
     $token = JWTAuth::fromUser($this->collaborator1);
-    $response = $this->getJson('/api/v1/tasks/' . $task->id, [
-        'Authorization' => 'Bearer ' . $token,
+    $response = $this->getJson('/api/v1/tasks/'.$task->id, [
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(200);
     $response->assertJson(
-        fn(AssertableJson $json) => $json->where('data.id', $task->id)
+        fn (AssertableJson $json) => $json->where('data.id', $task->id)
             ->where('data.title', $task->title)
             ->where('data.description', $task->description)
             ->where('data.document_id', $this->document->id)
@@ -96,8 +96,8 @@ test('unauthorized user cannot retrieve task', function () {
     $unauthorizedUser = User::factory()->create();
     $token = JWTAuth::fromUser($unauthorizedUser);
 
-    $response = $this->getJson('/api/v1/tasks/' . $task->id, [
-        'Authorization' => 'Bearer ' . $token,
+    $response = $this->getJson('/api/v1/tasks/'.$task->id, [
+        'Authorization' => 'Bearer '.$token,
     ]);
 
     $response->assertForbidden()
@@ -119,8 +119,8 @@ test('eagerly loads the task with its relationships', function () {
     DB::flushQueryLog();
     DB::enableQueryLog();
 
-    $response = $this->getJson('/api/v1/tasks/' . $task->id, [
-        'Authorization' => 'Bearer ' . $token,
+    $response = $this->getJson('/api/v1/tasks/'.$task->id, [
+        'Authorization' => 'Bearer '.$token,
     ]);
 
     $queries = DB::getQueryLog();
