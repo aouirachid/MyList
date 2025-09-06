@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\User\UpdateProfileRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use App\Http\Requests\Auth\ChangePasswordRequest;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Auth; // <-- Add this for Auth
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash; // <-- Add this for Auth
 use Symfony\Component\HttpFoundation\Response; // <-- Add this for Response
-
 
 class UserController extends Controller
 {
@@ -35,7 +31,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-        public function show(string $id)
+    public function show(string $id)
     {
         // Find the user requested by the ID in the URL.
         // If not found, a ModelNotFoundException is thrown and caught by Handler.php.
@@ -47,7 +43,7 @@ class UserController extends Controller
         if ($authenticatedUser->id != $requestedUser->id) {
             // If the IDs do not match, the user is not authorized.
             return response()->json([
-                'error' => 'You are not authorized to view this user.'
+                'error' => 'You are not authorized to view this user.',
             ], Response::HTTP_FORBIDDEN);
         }
 
@@ -57,18 +53,19 @@ class UserController extends Controller
 
         return response()->json($userData, Response::HTTP_OK);
     }
-    
+
     /**
      * Update the specified resource in storage.
      */
-    public function changePassword(ChangePasswordRequest $request) 
+    public function changePassword(ChangePasswordRequest $request)
     {
-    /** @var \App\Models\User $user */
+        /** @var \App\Models\User $user */
         // Get the authenticated user.
         $user = Auth::user();
         $user->password = Hash::make($request->new_password);
-        $user->password_changed_at=now();
+        $user->password_changed_at = now();
         $user->save();
+
         return response()->json([
             'message' => 'Password changed successfully',
         ], 200);
@@ -77,10 +74,11 @@ class UserController extends Controller
     public function update(UpdateProfileRequest $request, string $id)
     {
         $user = User::findOrFail($id);
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'User not found'], 404);
         }
         $user->update($request->all());
+
         return response()->json(['message' => 'User updated successfully', 'data' => $user], 200);
     }
 

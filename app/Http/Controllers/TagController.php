@@ -31,6 +31,7 @@ class TagController extends Controller
         ]);
 
         $tag = Tag::create($request->all());
+
         return response()->json([
             'message' => 'Tag created successfully',
             'data' => $tag,

@@ -17,7 +17,7 @@ class DocumentFactory extends Factory
     public function definition(): array
     {
         return [
-            'document_path' => 'documents/' . $this->faker->uuid() . '.pdf',
+            'document_path' => 'documents/'.$this->faker->uuid().'.pdf',
         ];
     }
 }

@@ -16,13 +16,12 @@ test('can retrieve all tags', function () {
     $tag3 = Tag::factory()->create(['tagName' => 'Personal']);
 
     $response = $this->getJson('/api/v1/tags', [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
 
     $response->assertStatus(200);
     $response->assertJson(
-        fn(AssertableJson $json) =>
-        $json->where('message', 'Tags retrieved successfully')
+        fn (AssertableJson $json) => $json->where('message', 'Tags retrieved successfully')
             ->has('data', 3)
             ->where('data.0.tagName', 'Urgent')
             ->where('data.1.tagName', 'Work')
@@ -36,17 +35,16 @@ test('can create a new tag', function () {
     $token = JWTAuth::fromUser($user);
 
     $tagData = [
-        'tagName' => 'Important'
+        'tagName' => 'Important',
     ];
 
     $response = $this->postJson('/api/v1/tags', $tagData, [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
 
     $response->assertStatus(201);
     $response->assertJson(
-        fn(AssertableJson $json) =>
-        $json->where('message', 'Tag created successfully')
+        fn (AssertableJson $json) => $json->where('message', 'Tag created successfully')
             ->where('data.tagName', 'Important')
             ->etc()
     );
@@ -59,7 +57,7 @@ test('tag creation validates required fields', function () {
     $token = JWTAuth::fromUser($user);
 
     $response = $this->postJson('/api/v1/tags', [], [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
 
     $response->assertStatus(422);

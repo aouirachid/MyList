@@ -1,31 +1,29 @@
 <?php
 
 use App\Models\User;
-//use Illuminate\Auth\Notifications\ResetPassword; replace this with 
-use App\Notifications\CustomResetPassword;//this one 
-use Illuminate\Support\Facades\Notification;
+// use Illuminate\Auth\Notifications\ResetPassword; replace this with
+use App\Notifications\CustomResetPassword; // this one
 use Faker\Factory as Faker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use function Pest\Laravel\postJson;
+use Illuminate\Support\Facades\Notification;
 
 beforeEach(function () {
     Notification::fake();
 });
 
-test("A valid user can request a password reset link", function () {
-    
+test('A valid user can request a password reset link', function () {
+
     $user = User::factory()->create()->fresh();
 
     $this->postJson('/api/v1/auth/password/email', ['email' => $user->email])
         ->assertStatus(200)
         ->assertJson([
             'status' => 'success',
-            'message' => 'Password reset link sent successfully. Please check your email.'
+            'message' => 'Password reset link sent successfully. Please check your email.',
         ]);
 
-    Notification::assertSentTo($user, CustomResetPassword::class);//i replaced the resetPassword with CustomResetPassword
+    Notification::assertSentTo($user, CustomResetPassword::class); // i replaced the resetPassword with CustomResetPassword
     $this->assertDatabaseHas('password_reset_tokens', [
-        'email' => $user->email
+        'email' => $user->email,
     ]);
 });
 
@@ -37,7 +35,7 @@ test('Email not found', function () {
         ->assertStatus(200)
         ->assertJson([
             'status' => 'success',
-            'message' => 'Password reset link sent successfully. Please check your email.'
+            'message' => 'Password reset link sent successfully. Please check your email.',
         ]);
 
     Notification::assertNothingSent();

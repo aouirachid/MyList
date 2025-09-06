@@ -1,12 +1,9 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Testing\Fluent\AssertableJson;
 
-
-test("authenticated user can successfully update several of their own profile fields", function () {
+test('authenticated user can successfully update several of their own profile fields', function () {
     // ARRANGE
     $user = User::factory()->create();
     $token = JWTAuth::fromUser($user);
@@ -16,21 +13,21 @@ test("authenticated user can successfully update several of their own profile fi
     $newCity = 'Casablanca';
 
     $response = $this->putJson(
-        '/api/v1/users/' . $user->id,
+        '/api/v1/users/'.$user->id,
         [
             'firstName' => $newFirstName,
             'lastName' => $newLastName,
             'city' => $newCity,
         ],
         [
-            'Authorization' => 'Bearer ' . $token
+            'Authorization' => 'Bearer '.$token,
         ]
     );
 
     // ASSERT
     $response->assertStatus(200);
     $response->assertJson([
-        'message' => 'User updated successfully'
+        'message' => 'User updated successfully',
     ]);
 
     $this->assertDatabaseHas('users', [
@@ -41,8 +38,7 @@ test("authenticated user can successfully update several of their own profile fi
     ]);
 });
 
-
-it("Fail to update user profile with invalid data", function () {
+it('Fail to update user profile with invalid data', function () {
     $userToUpdate = User::factory()->create();
     $otherUser = User::factory()->create(['userName' => 'otherUser', 'phone' => '0766051861']);
 
@@ -52,13 +48,13 @@ it("Fail to update user profile with invalid data", function () {
     $originalEmail = $userToUpdate->email;
 
     $response = $this->putJson(
-        '/api/v1/users/' . $userToUpdate->id,
+        '/api/v1/users/'.$userToUpdate->id,
         [
             'userName' => 'otherUser',
             'email' => 'invalidEmail',
         ],
         [
-            'Authorization' => 'Bearer ' . $token
+            'Authorization' => 'Bearer '.$token,
         ]
     );
 
@@ -73,7 +69,7 @@ it("Fail to update user profile with invalid data", function () {
     expect($userToUpdate->email)->toBe($originalEmail);
 });
 
-test(" user cannot update a restricted field", function () {
+test(' user cannot update a restricted field', function () {
     $user = User::factory()->create();
     $token = JWTAuth::fromUser($user);
     $newData = [
@@ -85,16 +81,16 @@ test(" user cannot update a restricted field", function () {
     $originalId = $user->id;
 
     $response = $this->putJson(
-        '/api/v1/users/' . $user->id,
+        '/api/v1/users/'.$user->id,
         $newData,
         [
-            'Authorization' => 'Bearer ' . $token
+            'Authorization' => 'Bearer '.$token,
         ]
     );
     $user->refresh();
     $response->assertStatus(200);
     $response->assertJson([
-        'message' => 'User updated successfully'
+        'message' => 'User updated successfully',
     ]);
     expect($user->id)->toBe($originalId);
     expect($user->firstName)->toBe($newData['firstName']);

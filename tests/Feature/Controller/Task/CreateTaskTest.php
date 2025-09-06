@@ -1,18 +1,16 @@
 <?php
+
 namespace Tests\Feature\Controller\Task;
 
+use App\Models\Document;
+use App\Models\Tag;
 use App\Models\Task;
 use App\Models\User;
-use App\Models\Tag;
-use App\Models\Document;
 use Illuminate\Support\Carbon;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tymon\JWTAuth\Contracts\Providers\JWT;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
-test('An authenticated user successfully create a top-level task',function(){
+test('An authenticated user successfully create a top-level task', function () {
     $user = User::factory()->create();
     $tag1 = Tag::factory()->create();
     $tag2 = Tag::factory()->create();
@@ -33,14 +31,13 @@ test('An authenticated user successfully create a top-level task',function(){
     $response = $this->postJson('/api/v1/tasks',
         $task,
         [
-        'Authorization' => 'Bearer ' . $token
-    ]);
+            'Authorization' => 'Bearer '.$token,
+        ]);
 
     $response->assertStatus(201);
     // Assert the JSON response contains the success message and the task data
     $response->assertJson(
-        fn(AssertableJson $json) =>
-        $json->where('message', 'Task created successfully')
+        fn (AssertableJson $json) => $json->where('message', 'Task created successfully')
             ->where('data.title', $task['title'])
             ->where('data.description', $task['description'])
             ->where('data.user_id', $user->id)
@@ -81,7 +78,7 @@ test('An authenticated user successfully create a sub task', function () {
         '/api/v1/tasks',
         $firstTask,
         [
-            'Authorization' => 'Bearer ' . $token
+            'Authorization' => 'Bearer '.$token,
         ]
     );
     $firstTaskResponse->assertStatus(201);
@@ -100,18 +97,16 @@ test('An authenticated user successfully create a sub task', function () {
         'status' => 1,
     ];
 
-
     $childResponse = $this->postJson(
         '/api/v1/tasks',
         $secondTask,
         [
-            'Authorization' => 'Bearer ' . $token
+            'Authorization' => 'Bearer '.$token,
         ]
     );
     $childResponse->assertStatus(201);
     $childResponse->assertJson(
-        fn(AssertableJson $json) =>
-        $json->where('message', 'Task created successfully')
+        fn (AssertableJson $json) => $json->where('message', 'Task created successfully')
             ->where('data.title', $secondTask['title'])
             ->where('data.description', $secondTask['description'])
             ->where('data.user_id', $user->id)
@@ -149,14 +144,13 @@ test('An authenticated user successfully create a task with document upload', fu
         '/api/v1/tasks',
         $task,
         [
-            'Authorization' => 'Bearer ' . $token
+            'Authorization' => 'Bearer '.$token,
         ]
     );
 
     $response->assertStatus(201);
     $response->assertJson(
-        fn(AssertableJson $json) =>
-        $json->where('message', 'Task created successfully')
+        fn (AssertableJson $json) => $json->where('message', 'Task created successfully')
             ->where('data.title', $task['title'])
             ->where('data.document_id', $document->id)
             ->has('data.tags', 1)
@@ -187,7 +181,7 @@ it('handle validation errors when creating a task', function () {
     ];
 
     $response = $this->postJson('/api/v1/tasks', $task, [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['endDate']);
@@ -214,7 +208,7 @@ it("can't create a task with a parent task that doesn't exist", function () {
     ];
 
     $childTaskResponse = $this->postJson('/api/v1/tasks', $childTask, [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
     $childTaskResponse->assertStatus(422);
     $childTaskResponse->assertJsonValidationErrors(['parentTaskId']);
@@ -239,7 +233,7 @@ it("can't create a task with a tag that doesn't exist", function () {
     ];
 
     $response = $this->postJson('/api/v1/tasks', $task, [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['tags.0']);
@@ -265,7 +259,7 @@ it("can't create a task with a document that doesn't exist", function () {
     ];
 
     $response = $this->postJson('/api/v1/tasks', $task, [
-        'Authorization' => 'Bearer ' . $token
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['document_id']);

@@ -37,7 +37,7 @@ class UserFactory extends Factory
             'country' => 'USA',
             'city' => 'New York',
             'birthday' => '1990-01-01',
-           'phone' => '0' . $this->faker->unique()->randomNumber(9, true), 
+            'phone' => '0'.$this->faker->unique()->randomNumber(9, true),
             'accountType' => '20',
             'status' => '1',
         ];
@@ -48,7 +48,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
