@@ -6,6 +6,7 @@ use App\Http\Requests\Task\CreateTaskRequest;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TaskController extends Controller
 {
@@ -77,9 +78,24 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
-        //
+        $userId = JWTAuth::parseToken()->authenticate()->id;
+        if (! $userId) {
+            return response()->json([
+                'message' => 'Token not provided',
+            ], 401);
+        }
+        $task = Task::with(['users', 'tags', 'document'])->findOrFail($id);
+        if ($task->user_id != $userId && !$task->users->contains($userId)) {
+            return response()->json([
+                'message' => 'You are not authorized to access this task',
+            ], 403);
+        }
+        return response()->json([
+            'message' => 'Task fetched successfully',
+            'data' => $task,
+        ], 200);
     }
 
     /**
