@@ -8,7 +8,6 @@ use App\Models\Task;
 use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-
 beforeEach(function () {
     $this->user = User::factory()->create();
 });
@@ -21,11 +20,11 @@ test('an authenticated user can update their own task', function () {
         'description' => 'Test Description',
     ]);
     $token = JWTAuth::fromUser($this->user);
-    $response = $this->putJson('/api/v1/tasks/' . $task->id, [
+    $response = $this->putJson('/api/v1/tasks/'.$task->id, [
         'title' => 'Updated Task',
         'description' => 'Updated Description',
     ], [
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(200);
     $response->assertJson([
@@ -56,10 +55,10 @@ test('changing the parentTaskId to move a task under a different parent', functi
         'parentTaskId' => $parentTask1->id,
     ]);
     $token = JWTAuth::fromUser($this->user);
-    $response = $this->putJson('/api/v1/tasks/' . $task->id, [
+    $response = $this->putJson('/api/v1/tasks/'.$task->id, [
         'parentTaskId' => $parentTask2->id,
     ], [
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(200);
     $response->assertJson([
@@ -78,10 +77,10 @@ test('that invalid data returns 422 with validation errors', function () {
         'description' => 'Task Description',
     ]);
     $token = JWTAuth::fromUser($this->user);
-    $response = $this->putJson('/api/v1/tasks/' . $task->id, [
+    $response = $this->putJson('/api/v1/tasks/'.$task->id, [
         'title' => '',
     ], [
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['title']);
@@ -104,10 +103,10 @@ test('updating the collaborators list', function () {
     $collaborator4 = User::factory()->create();
     $task->users()->attach([$collaborator1->id, $collaborator2->id]);
     $token = JWTAuth::fromUser($this->user);
-    $response = $this->putJson('/api/v1/tasks/' . $task->id, [
+    $response = $this->putJson('/api/v1/tasks/'.$task->id, [
         'users' => [$collaborator3->id, $collaborator4->id],
     ], [
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(200);
     $response->assertJson([
@@ -142,10 +141,10 @@ test('updating the tag list', function () {
     $tag2 = Tag::factory()->create();
     $task->tags()->attach([$tag1->id]);
     $token = JWTAuth::fromUser($this->user);
-    $response = $this->putJson('/api/v1/tasks/' . $task->id, [
+    $response = $this->putJson('/api/v1/tasks/'.$task->id, [
         'tags' => [$tag2->id],
     ], [
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(200);
     $response->assertJson([
@@ -171,10 +170,10 @@ test('updating the document', function () {
         'document_id' => $document->id,
     ]);
     $token = JWTAuth::fromUser($this->user);
-    $response = $this->putJson('/api/v1/tasks/' . $task->id, [
+    $response = $this->putJson('/api/v1/tasks/'.$task->id, [
         'document_id' => $updatedDocument->id,
     ], [
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(200);
     $response->assertJson([
@@ -194,10 +193,10 @@ test('unauthorized user cannot update task', function () {
     ]);
     $unauthorizedUser = User::factory()->create();
     $token = JWTAuth::fromUser($unauthorizedUser);
-    $response = $this->putJson('/api/v1/tasks/' . $task->id, [
+    $response = $this->putJson('/api/v1/tasks/'.$task->id, [
         'title' => 'Updated Task',
     ], [
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ]);
     $response->assertStatus(403);
     $response->assertJson([
