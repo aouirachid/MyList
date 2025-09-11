@@ -32,6 +32,8 @@ class UpdateTaskRequest extends FormRequest
             'document_id' => 'sometimes|nullable|exists:documents,id',
             'tags' => 'sometimes|nullable|array',
             'tags.*' => 'exists:tags,id',
+            'users' => 'sometimes|nullable|array',
+            'users.*' => 'exists:users,id',
             'status' => 'sometimes|integer',
         ];
     }
