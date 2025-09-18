@@ -2,7 +2,13 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -25,6 +31,67 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        // this one handle not found error
+        $this->renderable(function (ModelNotFoundException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => 'The resource you request does not exist or has been moved',
+                ], Response::HTTP_NOT_FOUND);
+            }
+        });
+
+        // This one handles route not found errors (404 for missing routes)
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => 'The requested URL was not found on this server.',
+                ], Response::HTTP_NOT_FOUND);
+            }
+        });
+
+        // this one handle unAuthenticationed user
+        $this->renderable(function (AuthenticationException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => Response::HTTP_UNAUTHORIZED,
+                    'message' => 'Unauthenticated. Please log in to access this resource.',
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+        });
+
+        // this one handle UNAUTHORIZED user
+        $this->renderable(function (AuthorizationException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => Response::HTTP_FORBIDDEN,
+                    'message' => 'You do not have permission to access this resource.',
+                ], Response::HTTP_FORBIDDEN);
+            }
+        });
+
+        // this one handle invalide data
+        $this->renderable(function (ValidationException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'message' => 'You have entred unvalidated data',
+                    'errors' => $e->errors(),
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        });
+
+        // this one handle internal server error
+        $this->renderable(function (Throwable $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                    'message' => 'Internal server error',
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
         });
     }
 }

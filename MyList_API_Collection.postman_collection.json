@@ -1,0 +1,659 @@
+{
+    "info": {
+        "_postman_id": "your-collection-id",
+        "name": "MyList API Collection",
+        "description": "Complete API collection for MyList Laravel application",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"firstName\": \"Aoui\",\n    \"lastName\": \"Rachid\",\n    \"gender\": \"male\",\n    \"country\": \"Morocco\",\n    \"city\": \"Casablanca\",\n    \"birthday\": \"2000-12-02\",\n    \"userName\": \"aouirachid\",\n    \"email\": \"rachid.aoui@mylist.com\",\n    \"phone\": \"766051861\",\n    \"password\": \"password12345\",\n    \"accountType\": 1,\n    \"status\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/register",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "register"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"login\": \"rachid.aoui@mylist.com\",\n    \"password\": \"password12345\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "login"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Refresh Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/refresh",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "refresh"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/logout",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "logout"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"john.doe@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/password/email",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "password", "email"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Reset Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"newpassword12345\",\n    \"password_confirmation\": \"newpassword12345\",\n    \"token\": \"reset_token_here\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/password/reset",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "password", "reset"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Get All Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["users"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["users", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update User",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"firstName\": \"Aoui Updated\",\n    \"lastName\": \"Rachid Updated\",\n    \"gender\": \"male\",\n    \"country\": \"United States\",\n    \"city\": \"Los Angeles\",\n    \"birthday\": \"2000-12-02\",\n    \"userName\": \"aouirachid\",\n    \"email\": \"rachid.aoui@mylist.com\",\n    \"phone\": \"766051861\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/users/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["users", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["users", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Change Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"current_password\": \"password12345\",\n    \"new_password\": \"newpassword12345\",\n    \"new_password_confirmation\": \"newpassword12345\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/users/1/change-password",
+                            "host": ["{{base_url}}"],
+                            "path": ["users", "users", "1", "change-password"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Tasks",
+            "item": [
+                {
+                    "name": "Get All Tasks",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/tasks",
+                            "host": ["{{base_url}}"],
+                            "path": ["tasks"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Task",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Sample Task\",\n    \"description\": \"This is a sample task description\",\n    \"status\": 1,\n    \"priority\":1,\n    \"startDate\": \"2025-12-31\",\n    \"endDate\": \"2025-12-31\",\n    \"user_id\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/tasks",
+                            "host": ["{{base_url}}"],
+                            "path": ["tasks"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Sub Task",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Sample Sub Task\",\n    \"description\": \"This is a sample sub task description\",\n    \"status\": 1,\n    \"priority\":1,\n    \"startDate\": \"2025-12-31\",\n    \"endDate\": \"2025-12-31\",\n    \"user_id\": 1,\n    \"parentTaskId\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/tasks",
+                            "host": ["{{base_url}}"],
+                            "path": ["tasks"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Task by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/tasks/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["tasks", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Task",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Updated Task Title\",\n    \"description\": \"Updated task description\",\n    \"status\": 1,\n    \"priority\": 1,\n    \"startDate\": \"2025-12-31\",\n    \"endDate\": \"2025-12-31\",\n    \"parentTaskId\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/tasks/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["tasks", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Task",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/tasks/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["tasks", "1"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Tags",
+            "item": [
+                {
+                    "name": "Get All Tags",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/tags",
+                            "host": ["{{base_url}}"],
+                            "path": ["tags"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Tag",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"tagName\": \"Sport\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/tags",
+                            "host": ["{{base_url}}"],
+                            "path": ["tags"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Tag by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/tags/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["tags", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Tag",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"tagName\": \"Sport Updated\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/tags/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["tags", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Tag",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/tags/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["tags", "1"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://mylist.test:8080/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "access_token",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
