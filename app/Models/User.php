@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\CustomResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +18,19 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'firstName',
+        'lastName',
+        'gender',
+        'country',
+        'city',
+        'birthday',
+        'userName',
         'email',
+        'phone',
         'password',
+        'password_changed_at',
+        'accountType',
+        'status',
     ];
 
     /**
@@ -40,6 +50,34 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'birthday' => 'date', // Cast birthday to date
         'password' => 'hashed',
+        'password_changed_at' => 'datetime', // Add this cast for the new column
     ];
+
+    public function task()
+    {
+        return $this->belongsToMany(Task::class);
+    }
+
+    // JWT
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [
+            // Include the timestamp of the last password change.
+            // This is used by the JwtAuthMiddleware to invalidate tokens
+            // issued before the last password reset.
+            'password_changed_at' => $this->password_changed_at ? $this->password_changed_at->timestamp : null,
+        ];
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPassword($token));
+    }
 }
